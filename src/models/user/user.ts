@@ -1,12 +1,13 @@
 interface Token {
 	value: string
-	duration: number
+	admin?: boolean
 }
 
 interface User {
-	nombre: string
-	password: string
-	admin: string
+	nombre?: string
+	password?: string
+	admin?: string
+	nickname?: string
 }
 
 export { Token, User }

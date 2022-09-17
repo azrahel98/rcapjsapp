@@ -1,31 +1,26 @@
-import { Router } from 'express'
-import { MysqlIns } from '../src/db/mysql'
+import e, { json, Router } from 'express'
+import { LogimImp } from '../src/app/login'
+import { verifyToken } from './auth/jwt'
 
 const router = Router()
+const logi = new LogimImp()
 
 router.post('/', async (req, res) => {
-	const { user, password } = req.body
-
-	if (user == undefined || password == undefined)
-		return res.send({
-			Error: 'Campos incompletos',
-		})
-	if (user !== 'raul' && password !== 'raul') {
-		return res.send({ Error: 'Contraseñas in' })
-	}
-
 	try {
-		const [rows, fields] = await (
-			await MysqlIns.getInstance().MysqlCon
-		).execute('select * from User')
+		const { user, password } = req.body
+		if (user == undefined || password == undefined)
+			return res.send({
+				Error: 'Campos incompletos',
+			})
 
-		return res.send(rows)
+		const d = await logi.login(user, password)
+		res.json(d)
 	} catch (error) {
-		res.send(error)
+		res.status(401).send((error as Error).message)
 	}
 })
 
-router.get('/', (req, res) => {
+router.get('/', verifyToken, (req, res) => {
 	res.send({
 		TEST: 'S',
 	})

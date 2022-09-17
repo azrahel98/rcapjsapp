@@ -2,13 +2,14 @@ import { createConnection } from 'mysql2/promise'
 
 export class MysqlIns {
 	private static instance: MysqlIns
+
 	public static getInstance(): MysqlIns {
 		if (!MysqlIns.instance) {
 			MysqlIns.instance = new MysqlIns()
 		}
 		return MysqlIns.instance
 	}
-	public readonly MysqlCon = createConnection({
+	public MysqlCon = createConnection({
 		database: process.env.DB_NAME,
 		host: process.env.DB_HOST,
 		user: process.env.DB_USER,
@@ -19,7 +20,7 @@ export class MysqlIns {
 		try {
 			await (await MysqlIns.getInstance().MysqlCon).connect()
 		} catch (error) {
-			console.log('Errro')
+			throw error
 		}
 	}
 }
