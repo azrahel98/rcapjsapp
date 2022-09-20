@@ -3,12 +3,105 @@ import { Doc } from '../models/doc/doc'
 import { PP } from '../models/doc/pp'
 import { DocRepository } from '../repo/doc_r'
 import mysql, { QueryError } from 'mysql2'
+import { RelojB } from '../models/asiste/asiste'
 
 export class DocImpl implements DocRepository {
+	async buscar_marcaciones(dni: string, mes: number): Promise<RelojB[] | null> {
+		try {
+			if (typeof dni === 'string' && dni.trim().length === 0)
+				throw 'parametros vacios'
+			const [result]: Array<any> = await (
+				await MysqlIns.getInstance().MysqlCon
+			).query(
+				'select * from Asiste where dni = ? and MONTH (fecha) = ? ORDER by fecha  asc , hora ',
+				[dni, mes]
+			)
+
+			const marc: Array<RelojB> = []
+
+			result.forEach((e: any) => {
+				marc.push({
+					dni: e['dni'],
+					hora: e['hora'],
+					nombre: e['nombre'],
+					reloj: e['reloj'],
+					fecha: new Date(e['fecha']),
+				})
+			})
+
+			return marc
+		} catch (error) {
+			throw new Error(error as string)
+		}
+	}
+	async buscar_papeletas(dni: string, mes: number): Promise<PP[] | null> {
+		try {
+			if (typeof dni === 'string' && dni.trim().length === 0)
+				throw 'parametros vacios'
+
+			const [result]: Array<any> = await (
+				await MysqlIns.getInstance().MysqlCon
+			).query(
+				'SELECT * FROM Papeleta  p where p.dni= ?  and month(fecha) = ?',
+				[dni, mes]
+			)
+			const papeletas: Array<PP> = []
+
+			result.forEach((e: any) => {
+				papeletas.push({
+					descrip: e['descr'],
+					detalle: e['detalle'],
+					dni: e['dni'],
+					fecha: new Date(e['fecha']),
+					permiso: e['permiso'],
+					pid: e['papeletaid'],
+					pp: e['papeleta'],
+				})
+			})
+
+			return papeletas
+		} catch (error) {
+			throw new Error('ErrorbuscarPapeletas')
+		}
+	}
+	async buscar_documentos(dni: string, mes: number): Promise<Doc[] | null> {
+		try {
+			if (typeof dni === 'string' && dni.trim().length === 0)
+				throw 'parametros vacios'
+
+			const [result]: Array<any> = await (
+				await MysqlIns.getInstance().MysqlCon
+			).query(
+				`(select * from Doc d where MONTH (d.inicio) <= ? and MONTH (d.fin) >= ? and dni = ? ) UNION (select * from Doc d2 where dni = ?)`,
+				[mes, mes, dni, dni]
+			)
+			const docs: Array<Doc> = []
+
+			result.forEach((e: any) => {
+				docs.push({
+					docId: e['docId'],
+					dni: e['dni'],
+					docName: e['doc'],
+					fecha: new Date(e['fecha']),
+					tipoD: e['TipoDoc'],
+					tipoP: e['tipoper'],
+					descrip: e['descrip'],
+					ref: e['ref'],
+					inicio: e['inicio'] === '0000-00-00' ? null : new Date(e['inicio']),
+					fin: e['fin'] === '0000-00-00' ? null : new Date(e['fin']),
+					activo: e['activo'],
+				})
+			})
+
+			return docs
+		} catch (error) {
+			throw new Error(error as string)
+		}
+	}
 	async create_doc(doc: Doc, range: boolean): Promise<Doc | null> {
 		try {
 			if (this.check(doc)) throw 'parametros vacios'
-			const d = await (
+			const [result]: Array<any> = await (
 				await MysqlIns.getInstance().MysqlCon
 			).execute(
 				'insert into Doc(dni,doc,fecha,TipoDoc,tipoper,descrip,ref,inicio,fin) values(?,?,?,?,?,?,?,?,?)',
@@ -24,11 +117,14 @@ export class DocImpl implements DocRepository {
 					doc.fin,
 				]
 			)
-			console.log(d)
-			return null
+			const docR: Doc = doc
+			docR.docId = result['insertId']
+			return docR
 		} catch (error) {
-			if (((error as QueryError).code = 'ER_NO_REFERENCED_ROW_2'))
+			if ((error as QueryError).code === 'ER_NO_REFERENCED_ROW_2')
 				throw new Error('Dni no existe')
+			if ((error as QueryError).code === 'ER_DUP_ENTRY')
+				throw new Error('Documento duplicado')
 			throw new Error('Error desconocido')
 		}
 	}

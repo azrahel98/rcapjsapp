@@ -24,7 +24,7 @@ dRoute.post('/', async (req, res) => {
 		if (!moment(fecha, 'YYYY-MM-DD').isValid())
 			return res.status(400).json({ message: 'formato de fecha incorrecta' })
 
-		await dd.create_doc(
+		const doc = await dd.create_doc(
 			{
 				dni,
 				docName: nombre,
@@ -38,7 +38,40 @@ dRoute.post('/', async (req, res) => {
 			},
 			true
 		)
-		res.send({ sdfad: 's' })
+		res.json(doc)
+	} catch (error) {
+		res.status(401).json({ message: (error as Error).message })
+	}
+})
+
+dRoute.post('/docs', async (req, res) => {
+	try {
+		const { dni, mes } = req.body
+		if (!dni && !mes) return res.json({ message: 'campos vacios' })
+		const docs = await dd.buscar_documentos(dni, mes)
+		res.json(docs)
+	} catch (error) {
+		res.status(401).json({ message: (error as Error).message })
+	}
+})
+
+dRoute.post('/pps', async (req, res) => {
+	try {
+		const { dni, mes } = req.body
+		if (!dni && !mes) return res.json({ message: 'campos vacios' })
+		const docs = await dd.buscar_papeletas(dni, mes)
+		res.json(docs)
+	} catch (error) {
+		res.status(401).json({ message: (error as Error).message })
+	}
+})
+
+dRoute.post('/marcaciones', async (req, res) => {
+	try {
+		const { dni, mes } = req.body
+		if (!dni && !mes) return res.json({ message: 'campos vacios' })
+		const docs = await dd.buscar_marcaciones(dni, mes)
+		res.json(docs)
 	} catch (error) {
 		res.status(401).json({ message: (error as Error).message })
 	}

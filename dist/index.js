@@ -15,7 +15,7 @@ const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
 app.use(express_1.default.json());
 app.use('/login', login_1.router);
-app.use('/doc', doc_1.dRoute);
+app.use('/doc', jwt_1.verifyToken, doc_1.dRoute);
 app.use('/employ', jwt_1.verifyToken, employ_1.eroute);
 mysql_1.MysqlIns.Connect();
 app.listen(port, () => {

@@ -16,7 +16,7 @@ export class EmployImpl implements EmployRepository {
 
 			const [rows]: Array<any> = await (
 				await MysqlIns.getInstance().MysqlCon
-			).query(`select * from Detalle_Empleados where nombre LIKE "%${nombre}%"`)
+			).query(`select * from Detalle_Empleados where nombre LIKE "${nombre}%"`)
 
 			const employs: Array<Employ> = []
 			rows.forEach((e: any) => {
@@ -27,10 +27,7 @@ export class EmployImpl implements EmployRepository {
 					area: e['area'],
 					cargo: e['cargo'],
 					ingreso: new Date(e['ingreso']),
-					//activo: (e['activo'] = 'Y' ? true : false),
 					horario: e['horario'],
-					//renuncia: e['renuncia'],
-					//tarjeta: (e['tarjeta'] = 'Y' ? true : false),
 				})
 			})
 

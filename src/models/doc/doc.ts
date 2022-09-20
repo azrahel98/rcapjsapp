@@ -7,8 +7,8 @@ interface Doc {
 	tipoP?: TipoPer
 	descrip?: string
 	ref?: string
-	inicio?: Date
-	fin?: Date
+	inicio?: Date | null
+	fin?: Date | null
 	activo?: boolean
 }
 

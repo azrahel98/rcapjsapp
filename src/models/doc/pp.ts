@@ -1,11 +1,11 @@
 interface PP {
-	pid: number
-	dni: string
-	pp: string
-	descrip: string
-	detalle: string
-	fecha: Date
-	permiso: Permiso
+	pid?: number
+	dni?: string
+	pp?: string
+	descrip?: string
+	detalle?: string
+	fecha?: Date
+	permiso?: Permiso
 }
 
 enum Permiso {
