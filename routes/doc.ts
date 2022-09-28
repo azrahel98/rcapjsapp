@@ -44,6 +44,28 @@ dRoute.post('/', async (req, res) => {
 	}
 })
 
+dRoute.post('/ppcreate', async (req, res) => {
+	try {
+		const { dni, fecha, pp, descrip, permiso, detalle } = req.body
+		if (!dni && !pp && !fecha && !descrip)
+			return res.status(400).json({ message: 'sin parametros' })
+		if (!moment(fecha, 'YYYY-MM-DD').isValid())
+			return res.status(400).json({ message: 'formato de fecha incorrecta' })
+
+		const doc = await dd.create_pp({
+			descrip,
+			detalle,
+			dni,
+			fecha,
+			permiso,
+			pp,
+		})
+		res.json(doc)
+	} catch (error) {
+		res.status(401).json({ message: (error as Error).message })
+	}
+})
+
 dRoute.post('/docs', async (req, res) => {
 	try {
 		const { dni, mes } = req.body

@@ -9,12 +9,11 @@ router.post('/', async (req, res) => {
 	try {
 		const { user, password } = req.body
 		if (user == undefined || password == undefined)
-			return res.send({
-				Error: 'Campos incompletos',
+			return res.json({
+				error: 'Campos incompletos',
 			})
 
-		const d = await logi.login(user, password)
-		res.json(d)
+		res.json(await logi.login(user, password))
 	} catch (error) {
 		res.status(401).send((error as Error).message)
 	}

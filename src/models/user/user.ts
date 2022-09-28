@@ -4,6 +4,7 @@ interface Token {
 }
 
 interface User {
+	id?: number
 	nombre?: string
 	password?: string
 	admin?: string

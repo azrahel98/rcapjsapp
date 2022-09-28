@@ -1,3 +1,4 @@
+import { createPool } from 'mysql2'
 import { createConnection } from 'mysql2/promise'
 
 export class MysqlIns {
@@ -14,6 +15,9 @@ export class MysqlIns {
 		host: process.env.DB_HOST,
 		user: process.env.DB_USER,
 		password: process.env.DB_PWD,
+		waitForConnections: true,
+		connectionLimit: 10,
+		queueLimit: 0,
 	})
 
 	public static async Connect() {

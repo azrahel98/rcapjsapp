@@ -16,6 +16,7 @@ export class LogimImp implements LoginInterface {
 			const user: User = {}
 
 			rows.forEach((e: any) => {
+				user.id = e['userid']
 				user.admin = e['admin']
 				user.nickname = e['nickname']
 				user.nombre = e['nombre']
@@ -24,7 +25,7 @@ export class LogimImp implements LoginInterface {
 			if (user.password !== password) throw new Error('Contraseña incorrecta')
 
 			const token = jwt.sign(
-				{ id: user.nickname, admin: user.admin },
+				{ id: user.id, admin: user.admin },
 				process.env.SECRET_TOKEN || '####,.--',
 				{
 					expiresIn: '7d',

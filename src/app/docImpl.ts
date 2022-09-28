@@ -136,7 +136,24 @@ export class DocImpl implements DocRepository {
 		throw new Error('Method not implemented.')
 	}
 	async create_pp(pp: PP): Promise<Doc> {
-		throw new Error('Method not implemented.')
+		try {
+			if (this.check(pp)) throw 'parametros vacios'
+			const [result]: Array<any> = await (
+				await MysqlIns.getInstance().MysqlCon
+			).execute(
+				'INSERT INTO Papeleta(dni,papeleta,descr,detalle,fecha,permiso) values(?,?,?,?,?,?)',
+				[pp.dni, pp.pp, pp.descrip, pp.detalle, pp.fecha, pp.permiso]
+			)
+			const docR: PP = pp
+			docR.pid = result['insertId']
+			return docR
+		} catch (error) {
+			if ((error as QueryError).code === 'ER_NO_REFERENCED_ROW_2')
+				throw new Error('Dni no existe')
+			if ((error as QueryError).code === 'ER_DUP_ENTRY')
+				throw new Error('Papeleta duplicado')
+			throw new Error('Error desconocido')
+		}
 	}
 	async edit_pp(pp: PP): Promise<Doc> {
 		throw new Error('Method not implemented.')
