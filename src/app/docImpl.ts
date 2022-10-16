@@ -72,12 +72,13 @@ export class DocImpl implements DocRepository {
 			const [result]: Array<any> = await (
 				await MysqlIns.getInstance().MysqlCon
 			).query(
-				`(select * from Doc d where MONTH (d.inicio) <= ? and MONTH (d.fin) >= ? and dni = ? ) UNION (select * from Doc d2 where dni = ?)`,
-				[mes, mes, dni, dni]
+				`(select * from Doc d where MONTH (d.inicio) <= ? and MONTH (d.fin) >= ? and dni = ? ) UNION (select * from Doc d2 where dni = ? and MONTH(fecha) = ? )`,
+				[mes, mes, dni, dni, mes]
 			)
 			const docs: Array<Doc> = []
 
 			result.forEach((e: any) => {
+				console.log(e['inicio'])
 				docs.push({
 					docId: e['docId'],
 					dni: e['dni'],
@@ -87,8 +88,9 @@ export class DocImpl implements DocRepository {
 					tipoP: e['tipoper'],
 					descrip: e['descrip'],
 					ref: e['ref'],
-					inicio: e['inicio'] === '0000-00-00' ? null : new Date(e['inicio']),
-					fin: e['fin'] === '0000-00-00' ? null : new Date(e['fin']),
+					inicio:
+						e['inicio'] === '1899-11-30T05:08:36.000Z' ? null : e['inicio'],
+					fin: e['fin'] === '1899-11-30T05:08:36.000Z' ? null : e['fin'],
 					activo: e['activo'],
 				})
 			})

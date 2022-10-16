@@ -27,4 +27,8 @@ export class MysqlIns {
 			throw error
 		}
 	}
+
+	public async connection(){
+		
+	}
 }
