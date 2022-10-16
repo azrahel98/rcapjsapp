@@ -7,7 +7,7 @@ const dd = new DocImpl()
 
 dRoute.post('/', async (req, res) => {
 	try {
-		const { dni, nombre, fecha, doct, docpe, descr, ref, inicio, fin, activo } =
+		const { dni, nombre, fecha, doct, docpe, descr, ref, inicio, fin } =
 			req.body
 		if (
 			!dni &&

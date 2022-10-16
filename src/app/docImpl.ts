@@ -72,7 +72,7 @@ export class DocImpl implements DocRepository {
 			const [result]: Array<any> = await (
 				await MysqlIns.getInstance().MysqlCon
 			).query(
-				`(select * from Doc d where MONTH (d.inicio) <= ? and MONTH (d.fin) >= ? and dni = ? ) UNION (select * from Doc d2 where dni = ? and MONTH(fecha) = ? )`,
+				`(select * from Doc d where MONTH (d.inicio) <= ? and MONTH (d.fin) >= ? and dni = ? and activo = 0 ) UNION (select * from Doc d2 where dni = ? and MONTH(fecha) = ? and activo = 0)`,
 				[mes, mes, dni, dni, mes]
 			)
 			const docs: Array<Doc> = []
