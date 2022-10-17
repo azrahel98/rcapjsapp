@@ -78,7 +78,7 @@ export class DocImpl implements DocRepository {
 			const docs: Array<Doc> = []
 
 			result.forEach((e: any) => {
-				console.log(e['inicio'])
+
 				docs.push({
 					docId: e['docId'],
 					dni: e['dni'],

@@ -6,6 +6,7 @@ import { router } from './routes/login'
 import { dRoute } from './routes/doc'
 import { eroute } from './routes/employ'
 import { verifyToken } from './routes/auth/jwt'
+import { asRoute } from './routes/asistencia'
 
 dotenv.config()
 
@@ -18,6 +19,7 @@ app.use(cors())
 app.use('/login', router)
 app.use('/doc', verifyToken, dRoute)
 app.use('/employ', verifyToken, eroute)
+app.use('/asist', verifyToken, asRoute)
 
 MysqlIns.Connect()
 
