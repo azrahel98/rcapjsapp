@@ -1,3 +1,4 @@
+import bluebird from 'bluebird'
 import { createPool } from 'mysql2'
 import { createConnection } from 'mysql2/promise'
 
@@ -10,7 +11,7 @@ export class MysqlIns {
 		}
 		return MysqlIns.instance
 	}
-	public MysqlCon = createConnection({
+	public MysqlCon = createPool({
 		database: process.env.DB_NAME,
 		host: process.env.DB_HOST,
 		user: process.env.DB_USER,
@@ -18,17 +19,7 @@ export class MysqlIns {
 		waitForConnections: true,
 		connectionLimit: 10,
 		queueLimit: 0,
-	})
+	}).promise()
 
-	public static async Connect() {
-		try {
-			await (await MysqlIns.getInstance().MysqlCon).connect()
-		} catch (error) {
-			throw error
-		}
-	}
 
-	public async connection(){
-		
-	}
 }

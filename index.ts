@@ -21,7 +21,6 @@ app.use('/doc', verifyToken, dRoute)
 app.use('/employ', verifyToken, eroute)
 app.use('/asist', verifyToken, asRoute)
 
-MysqlIns.Connect()
 
 app.listen(port, () => {
 	console.log(`⚡️[server]: Server is running at https://localhost:${port}`)

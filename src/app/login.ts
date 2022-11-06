@@ -7,8 +7,10 @@ import jwt from 'jsonwebtoken'
 export class LogimImp implements LoginInterface {
 	async login(username: string, password: string): Promise<Token | null> {
 		try {
+
+
 			const [rows]: Array<any> = await (
-				await MysqlIns.getInstance().MysqlCon
+				MysqlIns.getInstance().MysqlCon
 			).execute('select * from User where nickname = ?', [username])
 
 			if ((rows as Array<any>).length == 0) throw new Error('Usuario no existe')
