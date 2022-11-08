@@ -28,7 +28,7 @@ export class LogimImp implements LoginInterface {
 
 			const token = jwt.sign(
 				{ id: user.id, admin: user.admin },
-				process.env.SECRET_TOKEN || '####,.--',
+				process.env.SECRET_TOKEN as string,
 				{
 					expiresIn: '7d',
 				}

@@ -30,4 +30,15 @@ asRoute.post('/search', async (req, res) => {
     }
 })
 
+asRoute.post('/group', async (req, res) => {
+    try {
+        const { grupo, mes, año } = req.body
+        if (grupo == undefined || !mes || !año) return res.status(400).json({ message: 'sin parametros' })
+        const data = await asm.grupofMonth(grupo, mes, año)
+        return res.json(data)
+    } catch (e) {
+        res.status(401).json({ message: (e as Error).message })
+    }
+})
+
 export { asRoute }

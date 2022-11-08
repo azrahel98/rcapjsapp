@@ -1,10 +1,22 @@
 import moment from 'moment'
 import { QueryError } from 'mysql2/promise'
 import { MysqlIns } from '../db/mysql'
-import { AsistenciaD } from '../models/asiste/asiste'
+import { AsistenciaD, AsistenciaTable } from '../models/asiste/asiste'
 import { AsisteRepo } from '../repo/asiste'
 
 export class AsistImpl implements AsisteRepo {
+	async grupofMonth(grupo: string, mes: number, año: number): Promise<AsistenciaTable[] | null> {
+		try {
+			const [result]: Array<any> = await MysqlIns.getInstance()
+				.MysqlCon.query('select e.nombre, sum(a.tardanza) tardanza,sum(a.falta) falta,month(a.fecha) mes from Asistencia a right join Employ e on a.dni = e.dni where e.grupo = ? and month(a.fecha) = ? and year(a.fecha) = ? GROUP BY e.nombre',
+					[grupo, mes, año])
+			if (result.length == 0) return null
+			return result
+		} catch (error) {
+			return null
+		}
+	}
+
 	async add(asis: AsistenciaD): Promise<AsistenciaD | null> {
 		try {
 			if (!asis.dni) throw 'sin parametros'
@@ -60,7 +72,7 @@ export class AsistImpl implements AsisteRepo {
 	async buscarAsistencia(fecha: string, dni: string): Promise<AsistenciaD | null> {
 		try {
 			const [result]: Array<any> = await (
-				await MysqlIns.getInstance().MysqlCon
+				MysqlIns.getInstance().MysqlCon
 			).query(
 				`SELECT * FROM Asistencia where dni = ? and fecha = ?`,
 				[dni, fecha]
@@ -72,4 +84,6 @@ export class AsistImpl implements AsisteRepo {
 			return null
 		}
 	}
+
+
 }

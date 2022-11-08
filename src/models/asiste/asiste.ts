@@ -19,5 +19,11 @@ interface AsistenciaD {
 	id?: number | null
 
 }
+interface AsistenciaTable {
+	nombre?: string
+	tardanza?: number
+	falta?: number
+	mes?: number
+}
 
-export { RelojB, AsistenciaD }
+export { RelojB, AsistenciaD, AsistenciaTable }
