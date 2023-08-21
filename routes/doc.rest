@@ -1,0 +1,26 @@
+POST http://127.0.0.1:8080/doc/create HTTP/1.1
+content-type: application/json
+
+{
+    "fecha": "2022-10-01",
+    "tipo":"MEMORANDO",
+    "nombre":"test",
+    "detalle":[
+        {
+           "descripcion":"algo",
+           "fecha":"2022-11-01",
+           "asunto":"DF",
+           "dni":"70247264"
+        },{
+                 "descripcion":"algo",
+           "fecha":"2022-11-01",
+           "asunto":"DF",
+           "dni":"70247264"
+        },{
+                 "descripcion":"algo",
+           "fecha":"2022-11-01",
+           "asunto":"DF",
+           "dni":"70247264"
+        }
+    ]
+}
